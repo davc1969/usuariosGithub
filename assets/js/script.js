@@ -71,7 +71,7 @@ function callPromises (user, page, repPage) {
 
 const submitButton = document.getElementById("submitBtn");
 submitButton.addEventListener("click", async event => {
-    event.preventDefault;
+    event.preventDefault();
 
     
     let userLogin     = document.getElementById("nombre").value;
@@ -79,7 +79,7 @@ submitButton.addEventListener("click", async event => {
     let userReposList = parseInt(document.getElementById("repoPagina").value);
 
     if (userLogin != "" && userReposPage > 0 && userReposList > 0) {
-        await callPromises("davc1969", 1, 10);
+        await callPromises(userLogin, userReposPage, userReposList);
     }
     else {
         alert("Datos incompletos. Por favor llene todos los campos")
