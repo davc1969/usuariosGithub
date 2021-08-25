@@ -1,7 +1,7 @@
-
+// URL base del API de hithub para leer la información de los usuarios
 const baseUrl = "https://api.github.com/users/";
 
-// Funcion request, recibe un url y devuelve un json.  Se encarga de llamar a la API
+// Funcion request, recibe un url y devuelve un json.  Se encarga de llamar a la API de GitHub
 async function request(url) {
     console.log(">> ", url);
     try {
@@ -19,16 +19,27 @@ async function request(url) {
     }
 }
 
+
+// Función para obtener la información del usuario, recibe el nombre del usuario 
+// y lo pasa a la función request que retorna el json correspondiente
 const getUser = async (user) => {
     const urlUser = baseUrl + user;
     return request(urlUser)
 }
 
-const getRepositories = async (user, page, repos) => {
+
+// Función para obtener la información de los repositorios del usuario, 
+// recibe el nombre del usuario, el número de página y cuántos repositorios se desa ver
+// y lo pasa a la función request que retorna el json correspondiente
+const getRepo = async (user, page, repos) => {
     const urlRepos = `${baseUrl}${user}/repos?page=${page}&per_page=${repos}`
     return request(urlRepos);
 }
 
+
+// Función que se encarga de escribir en el html la información obtenida del usuario
+// a través de la función getUser.  REcibe el json con la información del usuario y lo
+// pone en el html en donde corresponde
 function renderUser(userData) {
     let userAvatar   = document.getElementById("userAvatar");
     let userName     = document.getElementById("userName");
@@ -46,6 +57,10 @@ function renderUser(userData) {
 
 }
 
+
+// Función que se encarga de escribir en el html la lista de lso repositorios del usuario
+// recibida mediante la función getRepositories.  REcibe el json con la información del usuario y lo
+// pone en el html en donde corresponde, creando links a cada repositorio listado
 function renderRepos(userRepos){
     let repoList   = document.getElementById("repos_list");
     repoList.innerHTML = "";
@@ -56,9 +71,12 @@ function renderRepos(userRepos){
 }
 
 
+// Función que se encarga de llamar simultánemente a las dos promesas necesarias para leer
+// toda la información del usuario.  Llama a getUser y getRepo pasando los parámetros necesarios en cada caso
+// si recibe bien la respuesta, llama a las funciones render para escribor la data
 function callPromises (user, page, repPage) {
     console.log("Call Promise: ", user, page, repPage);
-    Promise.all([getUser(user), getRepositories(user, page, repPage)])
+    Promise.all([getUser(user), getRepo(user, page, repPage)])
         .then(
             data => {
                 renderUser(data[0]);
@@ -69,6 +87,8 @@ function callPromises (user, page, repPage) {
 }
 
 
+// definición del escuchador del evento click sobre el boton del formulario
+// revisa que estén todos los campos llenos y hace el llamado a callpromises con los parámetros necesarios
 const submitButton = document.getElementById("submitBtn");
 submitButton.addEventListener("click", async event => {
     event.preventDefault();
@@ -87,5 +107,3 @@ submitButton.addEventListener("click", async event => {
     
 })
 
-
-//callPromises("davc1969", 1, 5);
